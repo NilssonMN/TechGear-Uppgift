@@ -123,22 +123,22 @@ const customerQuery = `
 `;
 
 function getCustomerById(id) {
-    const customerOrders = db.prepare(customerQuery).all(id);  // Fetch customer info and orders
+    const customerOrders = db.prepare(customerQuery).all(id); 
 
     if (customerOrders.length === 0) {
         return { message: "Customer not found" };
     }
 
-    // Initialize customer object
+    
     const customer = {
         customer_id: customerOrders[0].customer_id,
         name: customerOrders[0].name,
         email: customerOrders[0].email,
         phone: customerOrders[0].phone,
-        orders: []  // Initialize orders array
+        orders: []  
     };
 
-    // Loop through all the results and group the orders
+   
     customerOrders.forEach(order => {
         if (order.order_id) {
             customer.orders.push({
