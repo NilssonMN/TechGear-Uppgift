@@ -53,13 +53,31 @@ app.get("/products/category/:categoryId", (req, res) => {
 });
 
 
+/* Add new product in products
+{
+    "name": "Gaming Laptop",
+    "description": "High-end gaming laptop with RTX 4090.",
+    "price": 1500,
+    "stock_quantity": 25,
+    "manufacturer_id": 2
+}
+  */
 app.post("/products", (req, res) => {
     const { name, description, price, stock_quantity, manufacturer_id,} = req.body;
     res.json(createProduct(name, description, price, stock_quantity, manufacturer_id));
 });
 
 
-
+/*Uppdatera en befintlig produkt
+{
+    "name": "Gaming Laptop",
+    "description": "High-end gaming laptop with RTX 4090.",
+    "price": 1500,
+    "stock_quantity": 25,
+    "manufacturer_id": 5,
+    "category_id": 3
+  }
+  */
 app.put("/products/:id", (req, res) => {
     const productId = req.params.id;
     const { name, description, price, stock_quantity, manufacturer_id, category_id } = req.body;
@@ -74,7 +92,7 @@ app.put("/products/:id", (req, res) => {
 
 
 
-
+// Delete en befintlig produkt
 app.delete("/products/:id", (req, res) => {
     const productId = req.params.id;
     const result = deleteProduct(productId);
@@ -94,6 +112,13 @@ app.get("/customers/:id", (req, res) => {
 });
 
 
+/*uppdaterar befintlig customer mail,phone,adress
+{
+   "email": "newemail@.com",
+   "phone": "0710101010",
+   "address": "new adress 1337"
+}
+*/
 app.put("/customers/:id", (req, res) => {
     const { email, phone, address } = req.body;
     const result = updateCustomer(req.params.id, email, phone, address);

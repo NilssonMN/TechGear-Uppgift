@@ -1,5 +1,5 @@
 const Database = require("better-sqlite3");
-const db = new Database('./webbutiken.db', { verbose: console.log });
+const db = new Database('./TechGearWebShop.db', { verbose: console.log });
 // Enable foreign key constraints
 db.prepare("PRAGMA foreign_keys = ON").run();
 
@@ -199,7 +199,8 @@ const reviewsQuery = `
     SELECT 
         products.product_id, 
         products.name AS product_name, 
-        AVG(reviews.rating) AS avg_rating
+        AVG(reviews.rating) AS avg_rating, 
+        GROUP_CONCAT(reviews.comment, ' || ') AS comments
     FROM reviews
     JOIN products ON reviews.product_id = products.product_id
     GROUP BY products.product_id;
