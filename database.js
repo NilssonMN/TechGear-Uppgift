@@ -64,7 +64,6 @@ function updateProduct(id, name, description, price, stock_quantity, manufacture
     `);
     const result = updateProductStmt.run(name, description, price, stock_quantity, manufacturer_id, id);
 
-    
     let categoryUpdateResult = null;
 
     if (category_id) {
@@ -178,14 +177,14 @@ function getCustomerOrders(customerId) {
 //Analysdata
 const analysQuery = `
     SELECT 
-    COALESCE(categories.name, 'Uncategorized') AS category, 
-    COUNT(products.product_id) AS total_products, 
-    AVG(products.price) AS avg_price, 
-    SUM(products.stock_quantity) AS total_stock
-FROM products
-LEFT JOIN products_categories ON products.product_id = products_categories.product_id
-LEFT JOIN categories ON products_categories.category_id = categories.category_id
-GROUP BY COALESCE(categories.name, 'Uncategorized');
+        COALESCE(categories.name, 'Uncategorized') AS category, 
+        COUNT(products.product_id) AS total_products, 
+        AVG(products.price) AS avg_price, 
+        SUM(products.stock_quantity) AS total_stock
+    FROM products
+    LEFT JOIN products_categories ON products.product_id = products_categories.product_id
+    LEFT JOIN categories ON products_categories.category_id = categories.category_id
+    GROUP BY COALESCE(categories.name, 'Uncategorized');
 
 `;
 

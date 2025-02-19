@@ -1,10 +1,22 @@
 const express = require("express");
 const app = express();
 const PORT = 3000;
-const { getAllProducts, getProductByID,searchProductsByName,getProductsByCategory,createProduct, updateProduct,deleteProduct,getCustomerById,updateCustomer,getCustomerOrders,getProductStats,getReviewStats, } = require("./database");
+const { getAllProducts, 
+    getProductByID,
+    searchProductsByName,
+    getProductsByCategory,
+    createProduct, 
+    updateProduct,
+    deleteProduct,
+    getCustomerById,
+    updateCustomer,
+    getCustomerOrders,
+    getProductStats,
+    getReviewStats,
+                     } = require("./database");
+
+                     
 app.use(express.json()); // Allows Express to parse JSON body
-
-
 app.listen(PORT, () => {
     console.log(`Server is running`)
 })
