@@ -13,10 +13,11 @@ const { getAllProducts,
     getCustomerOrders,
     getProductStats,
     getReviewStats,
-                     } = require("./database");
+    updateCategoryId
+                     } = require("./database");     
 
-                     
-app.use(express.json()); // Allows Express to parse JSON body
+app.use(express.json()); 
+
 app.listen(PORT, () => {
     console.log(`Server is running`)
 })
@@ -24,7 +25,6 @@ app.listen(PORT, () => {
 //Produkthantering
 
 //Analysdata 
-// I Express.js hanteras rutter i den ordning de definieras. Om /products/:id kommer före /products/stats, så kommer "stats" att tolkas som en produkt-ID, 
 app.get("/products/stats", (req, res) => {
     const stats = getProductStats();
     res.json(stats); 
@@ -42,12 +42,12 @@ app.get("/products/:id", (req, res) => {
 res.json(getProductByID(req.params.id))
 });
 
-
+//Search product with name ex: /products/search/laptop
 app.get('/products/search/:name', (req, res) => {
     res.json(searchProductsByName(req.params.name));
 });
 
-
+//Search product category: 4
 app.get("/products/category/:categoryId", (req, res) => {
     res.json(getProductsByCategory(req.params.categoryId));
 });
@@ -63,8 +63,9 @@ app.get("/products/category/:categoryId", (req, res) => {
 }
   */
 app.post("/products", (req, res) => {
-    const { name, description, price, stock_quantity, manufacturer_id,} = req.body;
-    res.json(createProduct(name, description, price, stock_quantity, manufacturer_id));
+    const { name, description, price, stock_quantity, manufacturer_id } = req.body;
+    const result = createProduct(name, description, price, stock_quantity, manufacturer_id);
+    res.json(result);
 });
 
 
@@ -74,39 +75,31 @@ app.post("/products", (req, res) => {
     "description": "High-end gaming laptop with RTX 4090.",
     "price": 1500,
     "stock_quantity": 25,
-    "manufacturer_id": 5,
-    "category_id": 3
+    "manufacturer_id": 5
   }
   */
-app.put("/products/:id", (req, res) => {
-    const productId = req.params.id;
-    const { name, description, price, stock_quantity, manufacturer_id, category_id } = req.body;
-
-    const result = updateProduct(productId, name, description, price, stock_quantity, manufacturer_id, category_id);
-    if (result.product_updated > 0) {
-        res.json(result);
-    } else {
-        res.status(404).json({ error: "Product not found or update failed" });
-    }
+  app.put('/products/:id', (req, res) => {
+    const { name, description, price, stock_quantity, manufacturer_id } = req.body;
+    const result = updateProduct(req.params.id, name, description, price, stock_quantity, manufacturer_id);
+    res.json(result);
 });
 
 
 
 // Delete en befintlig produkt
 app.delete("/products/:id", (req, res) => {
-    const productId = req.params.id;
-    const result = deleteProduct(productId);
-    
+    const result = deleteProduct(req.params.id);
     if (result.product_deleted > 0) {
-        res.json(result);
+      res.status(204).send(); 
     } else {
-        res.status(404).json({ error: "Product not found" });
+      res.status(404).json({ error: "Product not found" });
     }
-});
+  });
 
 
 
 //Kundhantering
+//See customer with id
 app.get("/customers/:id", (req, res) => {
     res.json(getCustomerById(req.params.id));
 });
@@ -116,29 +109,58 @@ app.get("/customers/:id", (req, res) => {
 {
    "email": "newemail@.com",
    "phone": "0710101010",
-   "address": "new adress 1337"
+   "address": "new address 1337"
 }
 */
 app.put("/customers/:id", (req, res) => {
     const { email, phone, address } = req.body;
     const result = updateCustomer(req.params.id, email, phone, address);
-
     if (result.changes > 0) {
-        res.json(result);
+      res.status(200).json(result);
     } else {
-        res.status(404).json({ error: "Customer not found or no changes made" });
+      res.status(404).json({ error: "Customer not found or no changes made" }); 
     }
-});
+  });
 
-
+//See customers order 
 app.get("/customers/:id/orders", (req, res) => {
     res.json(getCustomerOrders(req.params.id));
 });
 
 //Analysdata 
+
+//See reviews stats
 app.get("/reviews/stats", (req, res) => {
     const stats = getReviewStats();
     res.json(stats);
+});
+
+
+//Update cascade
+/*PUT http://localhost:3000/categories/1
+
+Body i postman
+{
+    "newId": 11
+}
+
+GET för att se om categoryn är uppdaterad http://localhost:3000/products/category/1
+*/
+
+app.put("/categories/:oldId", (req, res) => {
+    const oldId = req.params.oldId;
+    const newId = req.body.newId;
+
+    if (!newId) {
+        return res.status(400).json({ error: "newId krävs" });
+    }
+
+    const result = updateCategoryId(oldId, newId);
+    if (result.error) {
+        return res.status(400).json(result);
+    }
+
+    res.json(result);
 });
 
 
