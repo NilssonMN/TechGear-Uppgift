@@ -63,7 +63,7 @@ function createProduct(name, description, price, stock_quantity, manufacturer_id
     }
 }
 
-//
+//Uppdaterar en befintlig product
 function updateProduct(id, name, description, price, stock_quantity, manufacturer_id) {
     try {
         const stmt = db.prepare('UPDATE products SET manufacturer_id = ?, name = ?, description = ?, price = ?, stock_quantity = ? WHERE product_id = ?');
