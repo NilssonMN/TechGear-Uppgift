@@ -1,7 +1,7 @@
 # TechGear - REST API
 
 A simple REST API project for managing products, customers, and statistics, built with **Node.js**, **Express.js**, and **SQLite**. The API supports full CRUD operations, product search, category filtering, and basic analytics.
----
+
 
 ## Tech Stack
 
